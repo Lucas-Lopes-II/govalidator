@@ -251,7 +251,7 @@ func TestAccumulator_MergeErr(t *testing.T) {
 	t.Run("composing multiple sub-struct validations", func(t *testing.T) {
 		t.Parallel()
 		// Simulates three self-validating sub-structs.
-		err1 := validation.NewAccumulator().Check(false, "a").Result()               // *BadRequestErr
+		err1 := validation.NewAccumulator().Check(false, "a").Result()                   // *BadRequestErr
 		err2 := validation.NewAccumulator().Check(false, "b").Check(false, "c").Result() // *CompositeErr
 
 		result := validation.NewAccumulator().

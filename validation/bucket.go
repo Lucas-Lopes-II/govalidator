@@ -5,7 +5,6 @@ import "sync"
 // ErrorBucket is a thread-safe error accumulator used to collect errors across
 // multiple validation phases before injecting them into a [ValidationComposite].
 //
-//
 // Usage:
 //
 //	bucket := validation.NewBucket()

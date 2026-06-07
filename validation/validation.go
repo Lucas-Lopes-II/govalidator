@@ -53,7 +53,6 @@ func (f ValidationFunc[T]) Validate(input T) error { return f(input) }
 // into a shared [ErrorBucket]. It is used when a child validator fills the bucket
 // and the parent calls [NewCompositeWithBucket] to include those errors.
 //
-//
 // Example:
 //
 //	var validateAddr validation.EntityValidatorFn[Address] = func(a Address, b *validation.ErrorBucket) {

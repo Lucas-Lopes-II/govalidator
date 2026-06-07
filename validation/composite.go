@@ -37,7 +37,6 @@ func NewComposite[T any](validations ...Validation[T]) *ValidationComposite[T] {
 //
 // The bucket is read via [ErrorBucket.Peek] (non-destructive) so the same bucket
 // can be shared across multiple composites in advanced scenarios.
-//
 func NewCompositeWithBucket[T any](bucket *ErrorBucket, validations ...Validation[T]) *ValidationComposite[T] {
 	c := NewComposite(validations...)
 	c.bucket = bucket
