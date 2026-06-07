@@ -64,6 +64,12 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Maps `*echo.HTTPError` status codes to typed domainerr values (401, 403, 404, 409, 5xx)
 - Passes through existing `DomainError` values unchanged
 
+#### `adapters/fiber` (sub-module: `github.com/Lucas-Lopes-II/govalidator/adapters/fiber`)
+- `ErrorHandler(c, err)` — `fiber.ErrorHandler`; bridges fasthttp to govalidator's error shape
+- Maps `*fiber.Error` status codes to typed domainerr values (401, 403, 404, 409, 5xx)
+- Passes through existing `DomainError` values unchanged
+- Logging mirrors `domainerr.WriteError` policy (slog.Error ≥ 500, slog.Warn < 500)
+
 #### Infrastructure
 - GitHub Actions CI: build, `go vet`, `-race` tests, coverage threshold (≥ 85%)
 - Adapter jobs in CI with separate Go version requirements (gin requires Go 1.25)

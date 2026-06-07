@@ -264,6 +264,34 @@ func CreateUser(c echo.Context) error {
 }
 ```
 
+### Fiber
+
+Fiber uses [fasthttp](https://github.com/valyala/fasthttp) instead of `net/http`, so it needs its own adapter.
+
+```sh
+go get github.com/Lucas-Lopes-II/govalidator/adapters/fiber@v0.1.0
+```
+
+```go
+import (
+    "github.com/gofiber/fiber/v2"
+    fiberadapter "github.com/Lucas-Lopes-II/govalidator/adapters/fiber"
+)
+
+// Register via fiber.Config at app creation:
+app := fiber.New(fiber.Config{
+    ErrorHandler: fiberadapter.ErrorHandler,
+})
+
+// In a handler — just return the error:
+func CreateUser(c *fiber.Ctx) error {
+    if err := useCase.Execute(input); err != nil {
+        return err // ErrorHandler serializes it
+    }
+    return c.Status(201).JSON(result)
+}
+```
+
 ### RFC 7807 Problem Details
 
 ```go
@@ -288,3 +316,4 @@ Full documentation is available on **[pkg.go.dev](https://pkg.go.dev/github.com/
 | `security` | Input sanitisation and HTTP guard utilities |
 | `adapters/gin` | Gin `Middleware()` (panic recovery + c.Errors) and `WriteError(c, err)` |
 | `adapters/echo` | Echo `ErrorHandler` with `*echo.HTTPError` → domainerr mapping |
+| `adapters/fiber` | Fiber `ErrorHandler` with `*fiber.Error` → domainerr mapping (fasthttp-compatible) |

@@ -48,11 +48,13 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # gin v1.12.0 requires go 1.25 — use stable which resolves to the latest.
+          # All adapters depend on the core (go 1.25) — use stable for all.
           - adapter: gin
             go-version: stable
           - adapter: echo
-            go-version: "1.22"
+            go-version: stable
+          - adapter: fiber
+            go-version: stable
     steps:
       - uses: actions/checkout@v4
 
