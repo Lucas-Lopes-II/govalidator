@@ -55,6 +55,16 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - `SafeSortField` — whitelist-based sort column guard (SQL injection protection)
 - `SafePageSize` — bounded pagination guard
 
+#### `adapters/gin` (sub-module: `github.com/Lucas-Lopes-II/govalidator/adapters/gin`)
+- `Middleware()` — panic recovery + `c.Errors` serialization; skips write if response already committed
+- `WriteError(c, err)` — serialize error response and call `c.Abort()`
+
+#### `adapters/echo` (sub-module: `github.com/Lucas-Lopes-II/govalidator/adapters/echo`)
+- `ErrorHandler(err, c)` — `echo.HTTPErrorHandler`; skips write if response already committed
+- Maps `*echo.HTTPError` status codes to typed domainerr values (401, 403, 404, 409, 5xx)
+- Passes through existing `DomainError` values unchanged
+
 #### Infrastructure
 - GitHub Actions CI: build, `go vet`, `-race` tests, coverage threshold (≥ 85%)
+- Adapter jobs in CI with separate Go version requirements (gin requires Go 1.25)
 - `.editorconfig` and `.gitignore`

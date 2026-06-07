@@ -7,8 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  test:
-    name: Build & Test
+  test-core:
+    name: Build & Test (core)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -40,3 +40,39 @@ jobs:
         with:
           name: coverage-report
           path: coverage.out
+
+  test-adapters:
+    name: Build & Test (${{ matrix.adapter }} adapter)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # gin v1.12.0 requires go 1.25 — use stable which resolves to the latest.
+          - adapter: gin
+            go-version: stable
+          - adapter: echo
+            go-version: "1.22"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: Download dependencies
+        working-directory: adapters/${{ matrix.adapter }}
+        run: go mod download
+
+      - name: Verify dependencies
+        working-directory: adapters/${{ matrix.adapter }}
+        run: go mod verify
+
+      - name: go vet
+        working-directory: adapters/${{ matrix.adapter }}
+        run: go vet ./...
+
+      - name: Run tests with race detector
+        working-directory: adapters/${{ matrix.adapter }}
+        run: go test -race -count=1 ./...

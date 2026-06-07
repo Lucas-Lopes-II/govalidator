@@ -201,48 +201,67 @@ limit := security.SafePageSize(pageSize, 20, 100)
 
 ## Adapters
 
+Framework adapters are published as independent sub-modules so you only pull
+in the framework you actually use.
+
 ### Gin
+
+```sh
+go get github.com/Lucas-Lopes-II/govalidator/adapters/gin@v0.1.0
+```
 
 ```go
 import (
     "github.com/gin-gonic/gin"
-    "github.com/Lucas-Lopes-II/govalidator/domainerr"
+    ginadapter "github.com/Lucas-Lopes-II/govalidator/adapters/gin"
 )
 
-func ErrorMiddleware() gin.HandlerFunc {
-    return func(c *gin.Context) {
-        c.Next()
-        if len(c.Errors) > 0 {
-            domainerr.WriteError(c.Writer, c.Errors.Last().Err)
-        }
-    }
-}
+// Register once as the outermost middleware — handles panics and c.Errors:
+r := gin.New()
+r.Use(ginadapter.Middleware())
 
-// In a handler — abort immediately:
+// In a handler — accumulate via c.Error (let Middleware serialize):
 func CreateUser(c *gin.Context) {
     if err := useCase.Execute(input); err != nil {
-        domainerr.WriteError(c.Writer, err)
-        c.Abort()
+        _ = c.Error(err)
         return
     }
     c.JSON(201, result)
+}
+
+// Or abort immediately with WriteError:
+func GetUser(c *gin.Context) {
+    if err := useCase.Execute(input); err != nil {
+        ginadapter.WriteError(c, err) // serializes + c.Abort()
+        return
+    }
+    c.JSON(200, result)
 }
 ```
 
 ### Echo
 
+```sh
+go get github.com/Lucas-Lopes-II/govalidator/adapters/echo@v0.1.0
+```
+
 ```go
 import (
     "github.com/labstack/echo/v4"
-    "github.com/Lucas-Lopes-II/govalidator/domainerr"
+    echoadapter "github.com/Lucas-Lopes-II/govalidator/adapters/echo"
 )
 
-func ErrorHandler(err error, c echo.Context) {
-    domainerr.WriteError(c.Response(), err)
-}
+// Register once on your Echo instance:
+e := echo.New()
+e.HTTPErrorHandler = echoadapter.ErrorHandler
 
-// Register on your Echo instance:
-e.HTTPErrorHandler = ErrorHandler
+// In a handler — just return the error:
+func CreateUser(c echo.Context) error {
+    if err := useCase.Execute(input); err != nil {
+        return err // ErrorHandler serializes it
+    }
+    return c.JSON(201, result)
+}
 ```
 
 ### RFC 7807 Problem Details
@@ -267,3 +286,5 @@ Full documentation is available on **[pkg.go.dev](https://pkg.go.dev/github.com/
 | `rules` | Built-in rule functions and fluent field builders |
 | `is` | Pure predicates: `UUID`, `Email`, `ISODate`, `StrongPassword`, `Latitude`, `Longitude` |
 | `security` | Input sanitisation and HTTP guard utilities |
+| `adapters/gin` | Gin `Middleware()` (panic recovery + c.Errors) and `WriteError(c, err)` |
+| `adapters/echo` | Echo `ErrorHandler` with `*echo.HTTPError` → domainerr mapping |
