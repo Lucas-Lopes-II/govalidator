@@ -1,0 +1,18 @@
+# Binários
+*.exe
+*.out
+/bin/
+
+# Cache de testes
+*.test
+*.prof
+
+# Cobertura
+coverage.out
+coverage.html
+
+# IDE
+.idea/
+.vscode/
+*.swp
+temp/
