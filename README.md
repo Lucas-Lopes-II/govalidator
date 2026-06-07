@@ -5,6 +5,26 @@
 [![CI](https://github.com/Lucas-Lopes-II/govalidator/actions/workflows/ci.yml/badge.svg)](https://github.com/Lucas-Lopes-II/govalidator/actions/workflows/ci.yml)
 [![Go Reference](https://pkg.go.dev/badge/github.com/Lucas-Lopes-II/govalidator.svg)](https://pkg.go.dev/github.com/Lucas-Lopes-II/govalidator)
 
+## Contents
+
+- [Features](#features)
+- [Requirements](#requirements)
+- [Install](#install)
+- [Quick start](#quick-start)
+  - [Pattern 1 — Inline Accumulator](#pattern-1--inline-accumulator)
+  - [Pattern 2 — Reusable ValidationComposite with field builders](#pattern-2--reusable-validationcomposite-with-field-builders)
+  - [Pattern 3 — Raw domain errors](#pattern-3--raw-domain-errors)
+- [Composing nested structs](#composing-nested-structs)
+- [Input sanitisation](#input-sanitisation)
+- [Adapters](#adapters)
+  - [Gin](#gin)
+  - [Echo](#echo)
+  - [Fiber](#fiber)
+  - [RFC 7807 Problem Details](#rfc-7807-problem-details)
+- [API Reference](#api-reference)
+
+---
+
 ## Features
 
 - **Typed domain errors** with HTTP status codes (400 / 401 / 403 / 404 / 409 / 500)
