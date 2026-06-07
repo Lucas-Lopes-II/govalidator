@@ -53,7 +53,6 @@ func (f ValidationFunc[T]) Validate(input T) error { return f(input) }
 // into a shared [ErrorBucket]. It is used when a child validator fills the bucket
 // and the parent calls [NewCompositeWithBucket] to include those errors.
 //
-// Equivalent to DomainValidator<T extends DomainEntity> in the Java companion library.
 //
 // Example:
 //
